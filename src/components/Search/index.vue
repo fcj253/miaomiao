@@ -49,10 +49,11 @@ export default {
     watch : {
         message(newVal) {
             var that = this
+            var cityId = this.$store.state.city.id
             // 快速输入终止请求
             this.cancelRequest()
             axios({
-                url : 'https://m.maizuo.com/gateway?cityId=130600&k=' + newVal,
+                url : 'https://m.maizuo.com/gateway?cityId='+ cityId +'&k=' + newVal,
                 headers : {
                     'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"1607051486881503382798337","bc":"130600","lo":"0","la":"0"}',
                     'X-Host': 'mall.film-ticket.cinema.recommend'
