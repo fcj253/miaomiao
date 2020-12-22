@@ -1,5 +1,7 @@
 <template>
   <div class="cinema_body">
+      <Loading v-if="isLoading" />
+      <Scroller v-else>
         <ul>
             <!-- <li>
                 <div>
@@ -30,6 +32,7 @@
                 </div>
             </li>
         </ul>
+      </Scroller>
     </div>
 </template>
 
@@ -39,12 +42,18 @@ export default {
     name : 'CiList',
     data () {
         return {
-            cinemaList : []
+            cinemaList : [],
+            isLoading : true
         }
     },
-    mounted () {
+    activated () {
+
+        var cityId = this.$store.state.city.id
+        if(this.prevCityId === cityId){return}
+        this.isLoading =true
+
         axios({
-            url : 'https://m.maizuo.com/gateway?cityId=130600&ticketFlag=1&k=8948707',
+            url : 'https://m.maizuo.com/gateway?cityId='+cityId+'&ticketFlag=1&k=8948707',
             headers : {
                 'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"1607051486881503382798337","bc":"130600"}',
                 'X-Host': 'mall.film-ticket.cinema.list'
@@ -53,7 +62,9 @@ export default {
             var msg = res.data.msg
             var cinemas = res.data.data.cinemas
             if (msg && cinemas) {
-                this.cinemaList = cinemas
+                this.cinemaList = res.data.data.cinemas
+                this.isLoading = false
+                this.prevCityId = cityId
             }
         })
     }

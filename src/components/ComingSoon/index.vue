@@ -1,31 +1,34 @@
 <template>
-  <div class="movie_body">
-		<ul>
-			<!-- <li>
-				<div class="pic_show"><img src="/images/movie_1.jpg"></div>
-				<div class="info_list">
-					<h2>无名之辈</h2>
-					<p><span class="person">17746</span> 人想看</p>
-					<p>主演: 陈建斌,任素汐,潘斌龙</p>
-					<p>2018-11-30上映</p>
-				</div>
-				<div class="btn_pre">
-					预售
-				</div>
-			</li> -->
-			<li v-for="item in movieList" :key="item.filmId">
-				<div class="pic_show"><img :src="item.poster"></div>
-				<div class="info_list">
-					<h2>{{ item.name }}</h2>
-					<p><span class="person">17746</span> 人想看</p>
-					<p>主演: {{ item.actors | actorfilter}}</p>
-					<p>{{ item.premiereAt | timeFilter}}上映</p>
-				</div>
-				<div class="btn_pre">
-					预售
-				</div>
-			</li>
-		</ul>
+    <div class="movie_body">
+		<Loading v-if="isLoading" />
+	    <Scroller v-else>
+			<ul>
+				<!-- <li>
+					<div class="pic_show"><img src="/images/movie_1.jpg"></div>
+					<div class="info_list">
+						<h2>无名之辈</h2>
+						<p><span class="person">17746</span> 人想看</p>
+						<p>主演: 陈建斌,任素汐,潘斌龙</p>
+						<p>2018-11-30上映</p>
+					</div>
+					<div class="btn_pre">
+						预售
+					</div>
+				</li> -->
+				<li v-for="item in movieList" :key="item.filmId">
+					<div class="pic_show"><img :src="item.poster"></div>
+					<div class="info_list">
+						<h2>{{ item.name }}</h2>
+						<p><span class="person">17746</span> 人想看</p>
+						<p>主演: {{ item.actors | actorfilter}}</p>
+						<p>{{ item.premiereAt | timeFilter}}上映</p>
+					</div>
+					<div class="btn_pre">
+						预售
+					</div>
+				</li>
+			</ul>
+	    </Scroller>
 	</div>
 </template>
 
@@ -47,10 +50,17 @@ export default {
 	name : 'ComingSoon',
 	data () {
         return {
-            movieList : []
+			movieList : [],
+			isLoading : true,
+			prevCityId : -1
         }
     },
-	mounted () {
+	activated () {
+
+		var cityId = this.$store.state.city.id
+        if(this.prevCityId === cityId){return}
+        this.isLoading =true
+
         axios({
             url: 'https://m.maizuo.com/gateway?cityId=130600&pageNum=1&pageSize=10&type=2&k=9036193',
             headers: {
@@ -60,7 +70,9 @@ export default {
         }).then(res => {
             var msg = res.data.msg
             if (msg === 'ok') {
-                this.movieList = res.data.data.films
+				this.movieList = res.data.data.films
+				this.isLoading = false
+				this.prevCityId = cityId
             }
         })
     }
@@ -69,7 +81,7 @@ export default {
 
 <style scoped>
 #content .movie_body{ flex:1; overflow:auto;}
-.movie_body ul{ margin:0 12px; overflow: hidden;}
+.movie_body ul{ margin:0 12px; overflow: hidden; height: 12594px;}
 .movie_body ul li{ margin-top:12px; display: flex; align-items:center; border-bottom: 1px #e6e6e6 solid; padding-bottom: 10px;}
 .movie_body .pic_show{ width:64px; height: 90px;}
 .movie_body .pic_show img{ width:100%;}
