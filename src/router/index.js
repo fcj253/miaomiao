@@ -12,12 +12,12 @@ const routes = [
   mineRouter,
   {
     path : '/*',
-    redirect : '/movie/nowPlaying'
+    redirect : '/movie'
   }
 ]
 
 const router = new VueRouter({
-  mode: 'hash',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
 })

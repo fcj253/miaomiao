@@ -16,9 +16,9 @@
 					</div>
 				</li> -->
 				<li v-for="item in movieList" :key="item.filmId">
-					<div class="pic_show"><img :src="item.poster"></div>
+					<div class="pic_show" @click="handleToDetail(item.filmId)"><img :src="item.poster"></div>
 					<div class="info_list">
-						<h2>{{ item.name }}</h2>
+						<h2 @click="handleToDetail(item.filmId)">{{ item.name }}</h2>
 						<p><span class="person">17746</span> 人想看</p>
 						<p>主演: {{ item.actors | actorfilter}}</p>
 						<p>{{ item.premiereAt | timeFilter}}上映</p>
@@ -75,7 +75,13 @@ export default {
 				this.prevCityId = cityId
             }
         })
-    }
+	},
+	methods : {
+        handleToDetail (movieId) {
+            // console.log(movieId)
+            this.$router.push('/movie/detail/2/' + movieId)
+		}
+	}
 }
 </script>
 
